@@ -1,0 +1,57 @@
+{
+  "name": "tuxvedit",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Tuxvedit - Video Editor for Linux",
+  "main": "electron/main.ts",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "dev:electron": "concurrently \"vite\" \"wait-on http://localhost:5173 && electron .\"",
+    "build": "tsc -b && vite build",
+    "build:electron": "vite build && electron-builder --linux",
+    "lint": "oxlint",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@wpmoo/ui": "^0.9.0",
+    "bootstrap": "^5.3.8",
+    "electron": "^43.3.0",
+    "electron-builder": "^26.15.3",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "uuid": "^14.0.1",
+    "zustand": "^5.0.14"
+  },
+  "devDependencies": {
+    "@types/node": "^24.13.3",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "@types/uuid": "^10.0.0",
+    "@vitejs/plugin-react": "^6.0.4",
+    "concurrently": "^9.2.4",
+    "oxlint": "^1.75.0",
+    "typescript": "~6.0.2",
+    "vite": "^8.2.0",
+    "wait-on": "^8.0.5"
+  },
+  "build": {
+    "appId": "com.tuxvedit.app",
+    "productName": "Tuxvedit",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "electron/**/*"
+    ],
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb"
+      ],
+      "category": "AudioVideo",
+      "icon": "build/icon.png"
+    }
+  }
+}
