@@ -18,6 +18,7 @@
     "bootstrap": "^5.3.8",
     "electron": "^43.3.0",
     "electron-builder": "^26.15.3",
+    "geist": "^1.7.2",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "uuid": "^14.0.1",
