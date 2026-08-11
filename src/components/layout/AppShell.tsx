@@ -10,14 +10,14 @@ export function AppShell() {
   const { converterOpen } = useUIStore();
 
   return (
-    <div className="flex flex-col h-full overflow-hidden">
+    <div className="flex flex-col h-full overflow-hidden" style={{ background: 'var(--surface-0)' }}>
       <Toolbar />
       <div className="flex flex-1 overflow-hidden">
         {/* Left Panel */}
         <div
           style={{
-            width: 280,
-            minWidth: 280,
+            width: 320,
+            minWidth: 320,
             borderRight: '1px solid var(--border)',
             background: 'var(--surface-1)',
           }}
@@ -33,8 +33,8 @@ export function AppShell() {
         {/* Right Panel: Properties */}
         <div
           style={{
-            width: 280,
-            minWidth: 280,
+            width: 300,
+            minWidth: 300,
             borderLeft: '1px solid var(--border)',
             background: 'var(--surface-1)',
           }}
@@ -46,8 +46,8 @@ export function AppShell() {
       {/* Bottom: Timeline */}
       <div
         style={{
-          height: 220,
-          minHeight: 180,
+          height: 240,
+          minHeight: 200,
           borderTop: '1px solid var(--border)',
           background: 'var(--surface-1)',
         }}

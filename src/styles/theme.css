@@ -2,24 +2,28 @@
 
 :root {
   /* Swiss Design Color Palette */
-  --black: #0A0A0A;
-  --white: #FAFAFA;
+  --black: #000000;
+  --white: #FFFFFF;
   --lightgray: #E5E5E5;
   --yellow: #FFD60A;
+  --yellow-dim: #BFA200;
   --orange: #FF6B00;
+  --orange-dim: #CC5500;
 
-  /* Dark UI Surfaces */
-  --surface-0: #0A0A0A;
+  /* Dark UI Surfaces - CapCut style */
+  --surface-0: #0E0E0E;
   --surface-1: #141414;
   --surface-2: #1A1A1A;
   --surface-3: #222222;
-  --border: #2A2A2A;
+  --surface-4: #2A2A2A;
+  --border: #2C2C2C;
   --border-hover: #3A3A3A;
+  --border-active: #4A4A4A;
 
   /* Text */
-  --text-primary: #FAFAFA;
-  --text-secondary: #A0A0A0;
-  --text-muted: #666666;
+  --text-primary: #EEEEEE;
+  --text-secondary: #999999;
+  --text-muted: #555555;
 
   /* Accent */
   --accent: #FFD60A;
@@ -29,11 +33,11 @@
 
   /* Semantic */
   --danger: #FF4444;
-  --success: #44FF44;
+  --success: #22C55E;
 
   /* Typography - Swiss Style */
-  --font-sans: 'Inter', 'Helvetica Neue', Arial, sans-serif;
-  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'SF Mono', monospace;
 
   /* Spacing - 8px grid */
   --space-1: 4px;
@@ -46,18 +50,21 @@
   --space-10: 40px;
   --space-12: 48px;
 
-  /* Border Radius - minimal */
-  --radius-sm: 2px;
-  --radius-md: 4px;
-  --radius-lg: 6px;
+  /* Border Radius */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+  --radius-full: 9999px;
 
-  /* Shadows - very subtle */
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 2px 4px rgba(0, 0, 0, 0.4);
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.5);
 
   /* Timeline */
-  --track-height: 48px;
-  --clip-min-width: 20px;
+  --track-height: 52px;
+  --clip-min-width: 24px;
   --playhead-color: var(--yellow);
 }
 
@@ -77,6 +84,7 @@ html, body, #root {
   font-size: 13px;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 /* Scrollbar styling */
@@ -86,11 +94,11 @@ html, body, #root {
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--surface-1);
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--border);
+  background: var(--surface-4);
   border-radius: 3px;
 }
 
@@ -107,23 +115,28 @@ html, body, #root {
 /* Focus */
 :focus-visible {
   outline: 1px solid var(--accent);
-  outline-offset: 1px;
+  outline-offset: 2px;
 }
 
 /* Input styling */
 input, select, textarea {
   font-family: var(--font-sans);
   font-size: 13px;
-  background: var(--surface-2);
+  background: var(--surface-3);
   border: 1px solid var(--border);
   color: var(--text-primary);
   padding: var(--space-2) var(--space-3);
   border-radius: var(--radius-md);
+  transition: border-color 0.15s ease;
 }
 
 input:focus, select:focus, textarea:focus {
   border-color: var(--accent);
   outline: none;
+}
+
+input::placeholder {
+  color: var(--text-muted);
 }
 
 /* Button base */
@@ -134,6 +147,73 @@ button {
   border: none;
   background: none;
   color: var(--text-primary);
+  transition: all 0.15s ease;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Custom range slider */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 4px;
+  background: var(--surface-4);
+  border-radius: 2px;
+  outline: none;
+  border: none;
+  padding: 0;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  background: var(--accent);
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid var(--surface-0);
+  box-shadow: 0 0 0 1px var(--accent);
+  transition: transform 0.1s ease;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+}
+
+input[type="range"]::-webkit-slider-thumb:active {
+  transform: scale(1.1);
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  background: var(--accent);
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid var(--surface-0);
+  box-shadow: 0 0 0 1px var(--accent);
+}
+
+/* Number input */
+input[type="number"] {
+  background: var(--surface-3);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-md);
+  font-size: 12px;
+  font-family: var(--font-mono);
+  width: 70px;
+}
+
+input[type="number"]:focus {
+  border-color: var(--accent);
+  outline: none;
 }
 
 /* Utility classes */

@@ -3,6 +3,7 @@ import { useProjectStore, type MediaFile } from '../../stores/projectStore';
 import { useFFmpeg } from '../../hooks/useFFmpeg';
 import { useTimelineStore } from '../../stores/timelineStore';
 import { v4 as uuidv4 } from 'uuid';
+import { Icons } from '../Icons';
 
 export function MediaPanel() {
   const { mediaFiles, addMediaFile, removeMediaFile } = useProjectStore();
@@ -86,15 +87,16 @@ export function MediaPanel() {
       <div
         className="flex items-center justify-between"
         style={{
-          padding: 'var(--space-3) var(--space-4)',
+          padding: '14px 16px',
           borderBottom: '1px solid var(--border)',
         }}
       >
-        <span style={{ fontWeight: 600, fontSize: 13 }}>Media</span>
+        <span style={{ fontWeight: 600, fontSize: 14, letterSpacing: '-0.2px' }}>Media</span>
         <button
           onClick={handleImport}
+          className="flex items-center gap-2"
           style={{
-            padding: '4px 12px',
+            padding: '6px 14px',
             borderRadius: 'var(--radius-md)',
             background: 'var(--accent)',
             color: 'var(--black)',
@@ -102,41 +104,60 @@ export function MediaPanel() {
             fontSize: 12,
           }}
         >
-          + Import
+          {Icons.import}
+          Import
         </button>
       </div>
 
       {/* Media List */}
-      <div className="flex-1 overflow-hidden" style={{ padding: 'var(--space-2)' }}>
+      <div className="flex-1 overflow-hidden" style={{ padding: '8px' }}>
         {mediaFiles.length === 0 ? (
           <div
             className="flex flex-col items-center justify-center h-full"
-            style={{ color: 'var(--text-muted)' }}
+            style={{
+              border: '2px dashed var(--border)',
+              borderRadius: 'var(--radius-lg)',
+              margin: '8px',
+              color: 'var(--text-muted)',
+            }}
           >
-            <div style={{ fontSize: 32, marginBottom: 8 }}>&#127916;</div>
-            <div style={{ fontSize: 13 }}>Drop files here or click Import</div>
+            <div style={{ fontSize: 40, marginBottom: 12, opacity: 0.5 }}>
+              {Icons.video}
+            </div>
+            <div style={{ fontSize: 14, fontWeight: 500, marginBottom: 4 }}>No media imported</div>
+            <div style={{ fontSize: 12 }}>Drop files here or click Import</div>
           </div>
         ) : (
-          <div className="flex flex-col gap-1">
+          <div className="flex flex-col gap-1.5">
             {mediaFiles.map((file) => (
               <div
                 key={file.id}
-                className="flex items-center gap-2"
+                className="flex items-center gap-3"
                 style={{
-                  padding: 'var(--space-2)',
+                  padding: '10px 12px',
                   borderRadius: 'var(--radius-md)',
                   background: 'var(--surface-2)',
                   cursor: 'pointer',
+                  transition: 'background 0.15s ease',
+                  border: '1px solid transparent',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = 'var(--surface-3)';
+                  e.currentTarget.style.borderColor = 'var(--border)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = 'var(--surface-2)';
+                  e.currentTarget.style.borderColor = 'transparent';
                 }}
                 onDoubleClick={() => handleAddToTimeline(file)}
               >
                 {/* Thumbnail */}
                 <div
                   style={{
-                    width: 48,
-                    height: 36,
-                    borderRadius: 'var(--radius-sm)',
-                    background: 'var(--surface-3)',
+                    width: 56,
+                    height: 40,
+                    borderRadius: 'var(--radius-md)',
+                    background: 'var(--surface-4)',
                     overflow: 'hidden',
                     flexShrink: 0,
                   }}
@@ -148,23 +169,21 @@ export function MediaPanel() {
                       style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                     />
                   ) : (
-                    <div className="flex items-center justify-center h-full" style={{ fontSize: 16 }}>
-                      &#127925;
+                    <div className="flex items-center justify-center h-full" style={{ color: 'var(--text-muted)' }}>
+                      {file.type === 'video' ? Icons.video : Icons.audio}
                     </div>
                   )}
                 </div>
 
                 {/* Info */}
                 <div className="flex-1 min-w-0">
-                  <div className="truncate" style={{ fontSize: 12, fontWeight: 500 }}>
+                  <div className="truncate" style={{ fontSize: 13, fontWeight: 500, marginBottom: 2 }}>
                     {file.name}
                   </div>
-                  <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>
-                    {file.type === 'video' && file.width
-                      ? `${file.width}x${file.height}`
-                      : 'Audio'}
-                    {' · '}
-                    {formatDuration(file.duration)}
+                  <div className="flex items-center gap-2" style={{ fontSize: 11, color: 'var(--text-muted)' }}>
+                    <span>{file.type === 'video' && file.width ? `${file.width}x${file.height}` : 'Audio'}</span>
+                    <span style={{ opacity: 0.5 }}>·</span>
+                    <span>{formatDuration(file.duration)}</span>
                   </div>
                 </div>
 
@@ -175,13 +194,15 @@ export function MediaPanel() {
                     removeMediaFile(file.id);
                   }}
                   style={{
-                    padding: '2px 6px',
+                    padding: '4px',
                     borderRadius: 'var(--radius-sm)',
                     color: 'var(--text-muted)',
-                    fontSize: 14,
+                    opacity: 0.5,
                   }}
+                  onMouseEnter={(e) => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.color = 'var(--danger)'; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.opacity = '0.5'; e.currentTarget.style.color = 'var(--text-muted)'; }}
                 >
-                  &times;
+                  {Icons.x}
                 </button>
               </div>
             ))}

@@ -1,6 +1,7 @@
 import { useRef, useEffect, useState, useCallback } from 'react';
 import { useTimelineStore } from '../../stores/timelineStore';
 import { useFFmpeg } from '../../hooks/useFFmpeg';
+import { Icons } from '../Icons';
 
 export function PreviewPanel() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -13,7 +14,6 @@ export function PreviewPanel() {
   const renderFrame = useCallback(async (time: number) => {
     const clip = getClipAtTime(time);
     if (!clip) {
-      // Render black frame
       const canvas = canvasRef.current;
       if (canvas) {
         const ctx = canvas.getContext('2d');
@@ -35,7 +35,6 @@ export function PreviewPanel() {
     }
   }, [getClipAtTime, extractFrame]);
 
-  // Render frame when time changes
   useEffect(() => {
     if (Math.abs(currentTime - lastFrameTime.current) > 0.03) {
       lastFrameTime.current = currentTime;
@@ -43,7 +42,6 @@ export function PreviewPanel() {
     }
   }, [currentTime, renderFrame]);
 
-  // Draw frame on canvas
   useEffect(() => {
     if (!frameUrl || !canvasRef.current) return;
     const canvas = canvasRef.current;
@@ -64,7 +62,6 @@ export function PreviewPanel() {
     img.src = frameUrl;
   }, [frameUrl]);
 
-  // Playback animation
   useEffect(() => {
     if (!isPlaying) {
       if (animRef.current) {
@@ -115,6 +112,16 @@ export function PreviewPanel() {
     setIsPlaying(false);
   }, [currentTime, duration, setCurrentTime, setIsPlaying]);
 
+  const skipToStart = useCallback(() => {
+    setCurrentTime(0);
+    setIsPlaying(false);
+  }, [setCurrentTime, setIsPlaying]);
+
+  const skipToEnd = useCallback(() => {
+    setCurrentTime(duration);
+    setIsPlaying(false);
+  }, [duration, setCurrentTime, setIsPlaying]);
+
   return (
     <div className="flex flex-col h-full">
       {/* Canvas */}
@@ -134,13 +141,15 @@ export function PreviewPanel() {
         <div
           style={{
             position: 'absolute',
-            bottom: 8,
-            right: 8,
-            padding: '2px 8px',
-            background: 'rgba(0,0,0,0.7)',
-            borderRadius: 'var(--radius-sm)',
+            bottom: 12,
+            right: 12,
+            padding: '4px 10px',
+            background: 'rgba(0,0,0,0.75)',
+            borderRadius: 'var(--radius-md)',
             fontSize: 12,
             fontFamily: 'var(--font-mono)',
+            letterSpacing: '0.05em',
+            backdropFilter: 'blur(8px)',
           }}
         >
           {formatTime(currentTime)} / {formatTime(duration)}
@@ -149,9 +158,8 @@ export function PreviewPanel() {
 
       {/* Transport Controls */}
       <div
-        className="flex items-center gap-4 justify-center"
         style={{
-          padding: 'var(--space-2) var(--space-4)',
+          padding: '12px 20px',
           background: 'var(--surface-2)',
           borderTop: '1px solid var(--border)',
         }}
@@ -159,12 +167,13 @@ export function PreviewPanel() {
         {/* Seek bar */}
         <div
           style={{
-            flex: 1,
-            height: 4,
-            background: 'var(--surface-3)',
-            borderRadius: 2,
+            width: '100%',
+            height: 6,
+            background: 'var(--surface-4)',
+            borderRadius: 3,
             cursor: 'pointer',
             position: 'relative',
+            marginBottom: 12,
           }}
           onClick={handleSeek}
         >
@@ -172,53 +181,76 @@ export function PreviewPanel() {
             style={{
               width: `${duration > 0 ? (currentTime / duration) * 100 : 0}%`,
               height: '100%',
-              background: 'var(--accent)',
-              borderRadius: 2,
+              background: 'linear-gradient(90deg, var(--yellow) 0%, var(--orange) 100%)',
+              borderRadius: 3,
+              transition: 'width 0.05s linear',
             }}
           />
           <div
             style={{
               position: 'absolute',
-              top: -4,
+              top: -5,
               left: `${duration > 0 ? (currentTime / duration) * 100 : 0}%`,
-              width: 12,
-              height: 12,
+              width: 16,
+              height: 16,
               background: 'var(--accent)',
               borderRadius: '50%',
               transform: 'translateX(-50%)',
+              boxShadow: '0 0 8px rgba(255,214,10,0.4)',
+              transition: 'left 0.05s linear',
             }}
           />
         </div>
 
         {/* Controls */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center justify-center gap-4">
+          <button
+            onClick={skipToStart}
+            style={{ padding: '6px', color: 'var(--text-secondary)', borderRadius: 'var(--radius-sm)' }}
+            onMouseEnter={(e) => e.currentTarget.style.color = 'var(--text-primary)'}
+            onMouseLeave={(e) => e.currentTarget.style.color = 'var(--text-secondary)'}
+          >
+            {Icons.skipBack}
+          </button>
           <button
             onClick={() => stepFrame(-1)}
-            style={{ padding: '4px 8px', fontSize: 16, color: 'var(--text-secondary)' }}
+            style={{ padding: '6px', color: 'var(--text-secondary)', borderRadius: 'var(--radius-sm)' }}
+            onMouseEnter={(e) => e.currentTarget.style.color = 'var(--text-primary)'}
+            onMouseLeave={(e) => e.currentTarget.style.color = 'var(--text-secondary)'}
           >
-            {'\u25C0'}
+            {Icons.stepBack}
           </button>
           <button
             onClick={togglePlay}
             style={{
-              width: 36,
-              height: 36,
+              width: 48,
+              height: 48,
               borderRadius: '50%',
               background: 'var(--accent)',
               color: 'var(--black)',
-              fontSize: 16,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
+              boxShadow: '0 0 16px rgba(255,214,10,0.3)',
             }}
           >
-            {isPlaying ? '\u23F8' : '\u25B6'}
+            {isPlaying ? Icons.pause : Icons.play}
           </button>
           <button
             onClick={() => stepFrame(1)}
-            style={{ padding: '4px 8px', fontSize: 16, color: 'var(--text-secondary)' }}
+            style={{ padding: '6px', color: 'var(--text-secondary)', borderRadius: 'var(--radius-sm)' }}
+            onMouseEnter={(e) => e.currentTarget.style.color = 'var(--text-primary)'}
+            onMouseLeave={(e) => e.currentTarget.style.color = 'var(--text-secondary)'}
           >
-            {'\u25B6'}
+            {Icons.stepForward}
+          </button>
+          <button
+            onClick={skipToEnd}
+            style={{ padding: '6px', color: 'var(--text-secondary)', borderRadius: 'var(--radius-sm)' }}
+            onMouseEnter={(e) => e.currentTarget.style.color = 'var(--text-primary)'}
+            onMouseLeave={(e) => e.currentTarget.style.color = 'var(--text-secondary)'}
+          >
+            {Icons.skipForward}
           </button>
         </div>
       </div>
